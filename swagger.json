@@ -1,0 +1,695 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Mojtaba Namazi project",
+        "description": "Maps and users documention"
+    },
+    "host": "localhost:3000",
+    "basePath": "/api/v1",
+    "tags": [
+        {
+            "name": "Maps",
+            "description": "API for maps in the application"
+        },
+        {
+            "name": "Authentication",
+            "description": "Api for login and register"
+        },
+        {
+            "name": "Users",
+            "description": "Api for get and delete users in application by `ADMIN` role"
+        }
+    ],
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/map/create": {
+            "post": {
+                "tags": [
+                    "Maps"
+                ],
+                "summary": "create a new map",
+                "description": "Create new map in system",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "required": true,
+                        "in": "header",
+                        "description": "You should add JWT token in header!"
+                    },
+                    {
+                        "name": "Map",
+                        "in": "body",
+                        "description": "map that we want to create",
+                        "schema": {
+                            "$ref": "#/definitions/CreateMap"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "New map is created",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid authentication",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid fields errors",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorInFields"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/map": {
+            "get": {
+                "tags": [
+                    "Maps"
+                ],
+                "summary": "Get all maps",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "items": {
+                                "$ref": "#/definitions/GetMap"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/map/page/{pagenumber}": {
+            "parameters": [
+                {
+                    "name": "pagenumber",
+                    "in": "path",
+                    "required": true,
+                    "description": "page number that we want to find",
+                    "type": "integer"
+                }
+            ],
+            "get": {
+                "tags": [
+                    "Maps"
+                ],
+                "summary": "Get all maps with pagination",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "items": {
+                                "$ref": "#/definitions/GetMap"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/map/page/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of map that we want to find",
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "tags": [
+                    "Maps"
+                ],
+                "summary": "Get one map by ID",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/GetMap"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/map/update/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of map that we want to update",
+                    "type": "string"
+                },
+                {
+                    "name": "authorization",
+                    "in": "header",
+                    "required": true,
+                    "description": "You should add JWT token in header!"
+                },
+                {
+                    "name": "map",
+                    "in": "body",
+                    "description": "Map with new values of properties",
+                    "schema": {
+                        "$ref": "#/definitions/CreateMap"
+                    }
+                }
+            ],
+            "put": {
+                "summary": "Update user with give ID",
+                "tags": [
+                    "Maps"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "map is updated",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid authentication",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/map/delete/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of map that we want to delete",
+                    "type": "string"
+                },
+                {
+                    "name": "authorization",
+                    "required": true,
+                    "in": "header",
+                    "description": "You should add JWT token in header!"
+                },
+                {
+                    "name": "map",
+                    "in": "body",
+                    "description": "Map with new values of properties",
+                    "schema": {
+                        "$ref": "#/definitions/CreateMap"
+                    }
+                }
+            ],
+            "delete": {
+                "summary": "Deletes user with give ID",
+                "tags": [
+                    "Maps"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "map is deleted",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid authentication",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "user login in application",
+                "parameters": [
+                    {
+                        "name": "login",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/login"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success Login",
+                        "schema": {
+                            "$ref": "#/definitions/auth"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid authentication",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid fields errors",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorInFields"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "user register in application",
+                "parameters": [
+                    {
+                        "name": "register",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/register"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success register",
+                        "schema": {
+                            "$ref": "#/definitions/auth"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid authentication",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid fields errors",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorInFields"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/refresh-token": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "refresh user access token",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "required": true,
+                        "in": "header",
+                        "description": "send jwt refresh token in header to get access token!"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success create access token",
+                        "schema": {
+                            "$ref": "#/definitions/refresh"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid authentication",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "get all users by just ADMIN role",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "You should add JWT token in header!"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success get all users",
+                        "schema": {
+                            "items": {
+                                "$ref": "#/definitions/user"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid authentication",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{id}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "get one user by id by just ADMIN role",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "You should add JWT token in header!"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success get user by id",
+                        "schema": {
+                            "$ref": "#/definitions/user"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid authentication",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "delete one user by id by just ADMIN role",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true,
+                        "description": "You should add JWT token in header!"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success delete user by id",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid authentication",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error",
+                        "schema": {
+                            "$ref": "#/definitions/RespnseMessage"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "CreateMap": {
+            "required": [
+                "latitude",
+                "longitude",
+                "address",
+                "phone"
+            ],
+            "properties": {
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "GetMap": {
+            "properties": {
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "userid": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                }
+            }
+        },
+        "RespnseMessage": {
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth": {
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "accessTokenExpiresIn": {
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "type": "string"
+                },
+                "refreshTokenExpiresIn": {
+                    "type": "string"
+                }
+            }
+        },
+        "refresh": {
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "accessTokenExpiresIn": {
+                    "type": "string"
+                }
+            }
+        },
+        "ErrorInFields": {
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "erorrs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/422Model"
+                    }
+                }
+            }
+        },
+        "422Model": {
+            "properties": {
+                "value": {
+                    "type": "boolean"
+                },
+                "msg": {
+                    "type": "string"
+                },
+                "param": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                }
+            }
+        },
+        "login": {
+            "required": [
+                "username",
+                "password"
+            ],
+            "properties": {
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "register": {
+            "required": [
+                "username",
+                "password",
+                "fullname",
+                "email"
+            ],
+            "properties": {
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "fullname": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "user": {
+            "properties": {
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "fullname": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "isAdmin": {
+                    "type": "boolean"
+                },
+                "createAt": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
